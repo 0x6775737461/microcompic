@@ -10,25 +10,16 @@ c_file := $(file).c
 all: hex #clean
 
 hex: $(file).c
-	 echo "Gerando o arquivo " $(hex_file)
-	 xc8 -V --chip=$(chip) $(c_file)
+\t echo "Gerando o arquivo " $(hex_file)
+\t xc8 -V --chip=$(chip) $(c_file)
 
-# TODO:
-# limpa todos os arquivos gerados pelo xc8,
-# exceto o *.c e *.hex... perceba que ta limpando
-# o próprio Makefile também.
-#clean: $(c_file) $(hex_file)
-#	 rm $(shell ls | grep -Ev "^*.(c|hex)$")
+clean: $(c_file) $(hex_file)
+\t rm $(shell ls | grep -Ev "(^*.(c|hex)$$|Makefile)")
 '''
-
-# Pega o nome do arquivo
-get_fname(){
-  read -p 'nome do arquivo: ' file_name
-}
 
 # Gera o Makefile
 gen_file(){
-  get_fname
+  file_name="$1"
 
   if test -n "$file_name"; then
     file_name=$(sed "s/replace_me/${file_name}/" \
@@ -39,7 +30,7 @@ gen_file(){
 }
 
 main() {
-  gen_file
+  gen_file "$1"
 }
 
-main 
+main "$@"
